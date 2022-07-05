@@ -1,18 +1,14 @@
 from bs4 import BeautifulSoup
 import requests
 
-# User Inputs
-item = input("What item are you looking for?    ")
-budget = int(input("What is your budget?    "))
-
-
 url = 'https://www.newegg.com/global/UK-en/todays-deals?cm_sp=Head_Navigation-_-Under_Search_Bar-_-Today%27s+Best+Deals&icid=650439'
 result = requests.get(url).text
 doc = BeautifulSoup(result, "html.parser")
 
-fixed_prices = {}
+all_items = {}
+found_items = {}
 
-class WebScraper():
+class NewEgg():
 
 
     def get_html():
@@ -30,25 +26,22 @@ class WebScraper():
         for table_rows in page_div_contents[:30]:
             title = (table_rows.a.img['title'])
             price = (f"{table_rows.strong.string}{table_rows.sup.string}").replace(",", '')
-            fixed_prices[title] = price
+            all_items[title] = price
 
-        return fixed_prices
+        return all_items
     
-    def find_items(fixed_prices, item="", budget=0):
-        for i in range (len(fixed_prices)):
-
-            item_price = (list(fixed_prices.items()))[i][1]
-            item_name = (list(fixed_prices.keys()))[i]
-
-            if float(item_price) <= budget and item in item_name: 
-
-                print(f"\nFound {item_name} for £{item_price} on Newegg!\n") 
+    def find_items(all_items, item="", budget=0):
+        for i in range(len(all_items)):
+            item_price = (list(all_items.items()))[i][1]
+            item_name = (list(all_items.keys()))[i]
                 
+            if budget >= float(item_price)  and item in item_name: 
+                for y in range(len(all_items)):
+                    found_items[item_name] = item_price
+                
+                                                
             elif item == "" and budget == 0:
-                print(f"\nFound {item_name} for £{item_price} on Newegg!\n")     
-                
-        
-
-page_div_contents = WebScraper.get_html()
-items = (WebScraper.get_items(page_div_contents))
-WebScraper.find_items(fixed_prices, item, budget)
+                for y in range(len(all_items)):
+                    found_items[item_name] = item_price
+        return (found_items)
+                               
