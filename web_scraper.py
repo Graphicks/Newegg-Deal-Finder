@@ -12,14 +12,11 @@ class NewEgg():
 
 
     def get_content(): # Navigates the HTML tree and returns the contents 
-        page_content = (doc.find("div", {"class": "item-cells-wrap tile-cells five-cells"}))
+        page_content = (doc.find("div", {"class": "item-cells-wrap tile-cells five-cells"})).contents
+        return page_content
 
-        content = (page_content.contents) 
-
-        return content
-
-    def get_items(content): # Looks through the contents to find the title and price of the product
-        for table_rows in content[:30]:
+    def get_items(page_content): # Looks through the contents to find the title and price of the product
+        for table_rows in page_content[:30]:
             title = (table_rows.a.img['title'])
             price = (f"{table_rows.strong.string}{table_rows.sup.string}").replace(",", '') # Adds the strong price to the sup price and removes any commas, this allows us to convert into a float.
             all_items[title] = price # Stores the name and the price in a dictionary
@@ -40,4 +37,4 @@ class NewEgg():
                 for y in range(len(all_items)):
                     found_items[item_name] = item_price
         return (found_items)
-                   
+                            
