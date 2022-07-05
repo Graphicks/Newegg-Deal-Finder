@@ -11,19 +11,15 @@ found_items = {} # All the items found after doing find_items
 class NewEgg():
 
 
-    def get_html(): # Navigates the HTML tree and returns the contents 
-        app = (doc.find(id='app'))
-        page_content = (app.find("div", {"class": "page-content"}))
-        page_section = (page_content.find("section", {"class": "page-section is-gray-background"}))
-        page_parent_div = (page_section.find("div", {"class": "page-section-inner"}))
-        page_div = (page_parent_div.find("div", {"class": "item-cells-wrap tile-cells five-cells"}))
+    def get_content(): # Navigates the HTML tree and returns the contents 
+        page_content = (doc.find("div", {"class": "item-cells-wrap tile-cells five-cells"}))
 
-        page_div_contents = (page_div.contents) 
+        content = (page_content.contents) 
 
-        return page_div_contents
+        return content
 
-    def get_items(page_div_contents): # Looks through the contents to find the title and price of the product
-        for table_rows in page_div_contents[:30]:
+    def get_items(content): # Looks through the contents to find the title and price of the product
+        for table_rows in content[:30]:
             title = (table_rows.a.img['title'])
             price = (f"{table_rows.strong.string}{table_rows.sup.string}").replace(",", '') # Adds the strong price to the sup price and removes any commas, this allows us to convert into a float.
             all_items[title] = price # Stores the name and the price in a dictionary
@@ -44,4 +40,4 @@ class NewEgg():
                 for y in range(len(all_items)):
                     found_items[item_name] = item_price
         return (found_items)
-                               
+                   
